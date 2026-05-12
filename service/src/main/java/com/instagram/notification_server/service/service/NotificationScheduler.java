@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 public class NotificationScheduler {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Scheduled(fixedRate = 14 * 60 * 5000)
+    @Scheduled(fixedRate = 10 * 60 * 5000)
     public void callNotificationApi() {
 
         try {
