@@ -32,16 +32,11 @@ public class NotificationService {
 
     public BatchResponse sendNotifications(List<String> tokens, String title, String body) throws Exception {
 
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(body)
-                .build();
-
         MulticastMessage message = MulticastMessage.builder()
                 .addAllTokens(tokens)
-                .setNotification(notification)
+                .putData("title", title)
+                .putData("body", body)
                 .build();
-
         BatchResponse response = FirebaseMessaging.getInstance()
                 .sendEachForMulticast(message);
         List<SendResponse> responses = response.getResponses();
