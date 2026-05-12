@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import static com.google.api.client.util.Data.mapOf;
 
 @Component
 public class NotificationScheduler {
@@ -19,11 +19,11 @@ public class NotificationScheduler {
     @Scheduled(fixedRate = 10 * 60 * 1000)
     public void callNotificationApi() {
         Firestore db = FirestoreClient.getFirestore();
-        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        String currentTime = LocalDateTime.now(ZoneId.of("Asia/Kolkata")).format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         try {
 
             String response = restTemplate.getForObject("https://insta-microservice.onrender.com/notification/get", String.class);
-            db.collection("Notification").document("ping").set(Map.of("log", "scheduler called at" + currentTime));
+            db.collection("Notification").document("ping").set(Map.of("log", "scheduler called at " + currentTime));
             System.out.println("Response = " + response);
 
         } catch (Exception e) {
