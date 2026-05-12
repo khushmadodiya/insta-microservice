@@ -2,27 +2,26 @@ package com.instagram.notification_server.service.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class NotificationScheduler {
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    private final WebClient webClient;
-
-    public NotificationScheduler(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("https://insta-microservice.onrender.com").build();
-    }
-
-    @Scheduled(fixedRate = 840000)
+    @Scheduled(fixedRate = 14 * 60 * 5000)
     public void callNotificationApi() {
 
-        String response = webClient
-                .get()
-                .uri("/notification/get")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        try {
 
-        System.out.println(response);
+            String response = restTemplate.getForObject(
+                    "https://insta-microservice.onrender.com/notification/get",
+                    String.class
+            );
+
+            System.out.println("Response = " + response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
